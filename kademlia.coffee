@@ -22,8 +22,6 @@ $ ->
         @add_node(node)
         node.find_node(this, @id
                   , (nodes) =>
-                      console.log("node " + node_id)
-                      console.log(nodes)
                       @add_node(n) for n in nodes)
 
       node_id++
@@ -50,23 +48,18 @@ $ ->
       temp = false
       i = @find_bucket(id)
       buckets = @get("buckets")
-      console.log("ADD node: " + id + " to node: " + @id)
-      console.log(node)
-      console.log(buckets[i])
       for n in buckets[i]
         do (n) ->
           if(id is n.get("id"))
             temp = true
       if(temp)
         return null
-      console.log("after")
       buckets[i].push(node)
  
 
     ping_node: (id, callback) ->
       buckets = this.get("buckets")
       console.log("Node buckets: " + buckets)
-      #callback(
 
     store_value: (source, key, val) ->
 
@@ -88,8 +81,6 @@ $ ->
       links = _.foldl(@get("buckets")
                       , (init, nodes) =>
                           init.push(@linkify(node)) for node in nodes
-                          #console.log("Get node links for: " + @id)
-                          #console.log(init)
                           return init
                       , [])
       return links
@@ -124,9 +115,6 @@ $ ->
 
     render: ->
       this.$el.html("<h1>Kademlia Network Simulation</h1>")
-      #svg.append("circle").attr("class", "node")
-      #.attr("r", 20)
-      #.attr("cx", 100).attr("cy", 100)
       links = @collection.get_links()
       nodes = @collection.models
 
@@ -144,11 +132,6 @@ $ ->
              .attr("class", "link")
              .style("stroke-width", 3)
 
-      console.log(link)
-             #.attr("d"
-             #       , (d) -> 
-             #           console.log(d)
-             #           d.tension(d.distance/256))
      
       node = svg.selectAll(".node")
              .data(nodes).enter().append("circle")
@@ -159,7 +142,6 @@ $ ->
 
       node.append("title").text( (d) -> return  "Node " + d.id)
       
-      console.log(node)
       force.on("tick"
                , -> 
                   link.attr("x1", (d) -> return d.source.x)
@@ -170,14 +152,8 @@ $ ->
                   node.attr("cx", (d) -> return d.x)
                       .attr("cy", (d) -> return d.y)
               )
-      #node = new Node()
-      #console.log(node)
-      #node.ping_node(0, null)
-      #this.collection.add(node)
 
     addNode: (node) ->
-      console.log("add")
-      console.log(node)
       item = new NodeItem({model: node})
       this.$("ul").append(item.render().el)
     
@@ -203,28 +179,10 @@ $ ->
       "keypress .js-kad-delete" : (e) ->
 
 
-  class NodeItem extends Backbone.View
-    initialize: ->
-      console.log('init item')
-
-    render: ->
-      console.log("render item")
-      console.log(this)
-      return this
-
   network = new Network
   node0 = new Node(null)
   network.add(node0)
   network.add(new Node(node0)) for node in [0..19]
-  #console.log("network: ")
-  #console.log(network)
-  #console.log("network JSON: " + JSON.stringify(network))
-  #console.log("network links: ")
-  #console.log(network.get_links())
-  #console.log("network links JSON: " + JSON.stringify(network.get_links()))
-  #network.test()
-  #console.log(network.get_links())
-  #console.log("network links JSON: " + JSON.stringify(network.get_links()))
   
   view = new NetworkView({collection: network})
 
