@@ -22,9 +22,9 @@ VALUE = 'example_value'
 def action():
     i=0
     print len(nodes)
-      for node in nodes:
+    for node in nodes:
         node.printContacts()
-      time.sleep(2)
+    time.sleep(2)
 
 def newNode():
   global port
