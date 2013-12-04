@@ -51,6 +51,7 @@ class SybilNode(EntangledNode):
         # Prepare a callback for this operation
         outerDf = defer.Deferred()
         def checkResult(result):
+            print 'result: ', result
             if type(result) == dict:
                 # We have found the value; now see who was the closest contact without it...
                 if 'closestNodeNoValue' in result:
@@ -74,10 +75,14 @@ class SybilNode(EntangledNode):
                 else:
                     # Ok, value does not exist in DHT at all
                     outerDf.callback(result)
-
+        
+        def errorCallback(error):
+          print 'An error has occurred: ', error.getErrorMessage()
+        
         # Execute the search
         df = self._iterativeFind(key, rpc='findValue')
         df.addCallback(checkResult)
+        df.addErrback(errorCallback)
         return outerDf
 
-
+    

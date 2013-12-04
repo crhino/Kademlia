@@ -37,9 +37,11 @@ def newNode(node_list):
     if os.path.isfile('/tmp/dbFile%s.db' % port):
         os.remove('/tmp/dbFile%s.db' % port)
     dataStore = SQLiteDataStore(dbFile = '/tmp/dbFile%s.db' % port)
+    
     sybil = SybilNode (id=KEY, udpPort=port, dataStore=dataStore)
+    #sybil = EntangledNode (id=KEY, udpPort=port, dataStore=dataStore)
+    
     sybil.joinNetwork(node_list)
-    print sybil
 
 
 # Taken from entangled examples.
@@ -96,8 +98,10 @@ def mainLoop():
         uinput = raw_input("> ")
         if uinput == 'store':
           storeVal(KEY, VALUE)
+          storeVal('another_key', 'another_value')
         elif uinput == 'get':
           getValue(KEY)
+          getValue('another_key')
         elif uinput == 'print':
           print_info()
     stop()
