@@ -38,7 +38,7 @@ def newNode(node_list):
         os.remove('/tmp/dbFile%s.db' % port)
     dataStore = SQLiteDataStore(dbFile = '/tmp/dbFile%s.db' % port)
     
-    sybil = SybilNode (id=KEY, udpPort=port, dataStore=dataStore)
+    sybil = SybilNode (udpPort=port, dataStore=dataStore)
     #sybil = EntangledNode (id=KEY, udpPort=port, dataStore=dataStore)
     
     sybil.joinNetwork(node_list)
@@ -62,21 +62,22 @@ def getValue(key):
     print '\nRetrieving value from DHT for key "%s"...' % key
     deferredResult = sybil.iterativeFindValue(key)
     # Add a callback to this result; this will be called as soon as the operation has completed
-    deferredResult.addCallback(getValueCallback)
+    deferredResult.addCallback(getValueCallback, key)
     # add the generic error callback
     deferredResult.addErrback(genericErrorCallback)
 
 # Taken from entangled examples.
 #
 # The findVal RPC passed result to us.
-def getValueCallback(result):
+def getValueCallback(result, key):
     """ Callback function that is invoked when the getValue() operation succeeds """
     # Check if the key was found (result is a dict of format {key: value}) or not (in which case a list of "closest" Kademlia contacts would be returned instead")
     print result
     if type(result) == dict:
-        print 'Value successfully retrieved: %s' % result[KEY]
+        print 'Value successfully retrieved: %s' % result[key]
     else:
         print 'Value not found'
+    twisted.internet.reactor.callLater(5, stop)
 
 # Function: storeVal
 # Args: key, val - Both strings.
@@ -85,27 +86,19 @@ def getValueCallback(result):
 def storeVal(key, val):
     print "Storing (key,val) pair: (\"%s\", \"%s\")." % (key, val)
     deferredResult = sybil.iterativeStore(key, val)
-    deferredResult.addCallback(storeValCallback)
+    deferredResult.addCallback(storeValCallback, key)
     deferredResult.addErrback(genericErrorCallback)
 
 def storeValCallback(*args, **kwargs):
     print 'Value has been stored in the DHT'
+    twisted.internet.reactor.callLater(3, getValue, args[1])
 
 
 def mainLoop():
-    uinput = ''
-    while uinput != 'quit':
-        uinput = raw_input("> ")
-        if uinput == 'store':
-          storeVal(KEY, VALUE)
-          storeVal('another_key', 'another_value')
-        elif uinput == 'get':
-          getValue(KEY)
-          getValue('another_key')
-        elif uinput == 'print':
-          print_info()
-    stop()
-
+    print_info()
+    time.sleep(2)
+    storeVal(KEY, VALUE)
+    storeVal("another_key", "another_value")
 
 def stop():
     """ Stops the Twisted reactor, and thus the script """
