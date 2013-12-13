@@ -1,0 +1,16 @@
+    README for Kademlia storage attack example
+            Christopher Piraino
+
+
+  The important files are: run.sh, sybil.py, create_network.py, and storage_attack.py.
+
+  sybil.py is a SybilNode class extension of the Entangled Node, used to implement
+  the storage attack.
+
+  create_network.py creates a Kademlia network for the Sybil node to connect to.
+
+  storage_attack.py instantiates the sybil Node, adds it to the network, and stores
+  (key, value) pairs for the Sybil to falsify.
+
+  run.sh uses create_network.py and storage_attack.py to run a full simulation and
+  clean-up everything so that the user can just sit and watch.
