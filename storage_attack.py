@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Python script to simulate a Sybil attack on a Kademlia Network
+# Python script to simulate a storage attack on a Kademlia Network
 
 
 import os, sys, time, signal
@@ -39,7 +39,6 @@ def newNode(node_list):
     dataStore = SQLiteDataStore(dbFile = '/tmp/dbFile%s.db' % port)
     
     sybil = SybilNode (udpPort=port, dataStore=dataStore)
-    #sybil = EntangledNode (id=KEY, udpPort=port, dataStore=dataStore)
     
     sybil.joinNetwork(node_list)
 
