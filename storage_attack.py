@@ -33,7 +33,7 @@ def print_info():
 def newNode(node_list):
     global port
     global sybil
-    print 'Creating Entangled Node...'
+    print 'Creating Sybil Node...'
     if os.path.isfile('/tmp/dbFile%s.db' % port):
         os.remove('/tmp/dbFile%s.db' % port)
     dataStore = SQLiteDataStore(dbFile = '/tmp/dbFile%s.db' % port)
@@ -71,7 +71,6 @@ def getValue(key):
 def getValueCallback(result, key):
     """ Callback function that is invoked when the getValue() operation succeeds """
     # Check if the key was found (result is a dict of format {key: value}) or not (in which case a list of "closest" Kademlia contacts would be returned instead")
-    print result
     if type(result) == dict:
         print 'Value successfully retrieved: %s' % result[key]
     else:

@@ -9,6 +9,8 @@
 
 import os, sys, time, signal
 
+nodes = []
+
 def destroyNetwork(nodes):
     print 'Destroying Kademlia network...'
     i = 0
@@ -22,7 +24,11 @@ def destroyNetwork(nodes):
         os.kill(node, signal.SIGTERM)
     print
 
+def handler(signum, frame):
+    sys.exit(0)
+
 if __name__ == '__main__':
+    signal.signal(signal.SIGINT, handler)
     if len(sys.argv) < 2:
         print 'Usage:\n%s AMOUNT_OF_NODES [NIC_IP_ADDRESS]' % sys.argv[0]
         print '\nNIC_IP_ADDRESS should be the IP address of the network interface through'
@@ -37,7 +43,6 @@ if __name__ == '__main__':
     
     startPort = 4000
     port = startPort+1
-    nodes = []
     print 'Creating Kademlia network...'
     try:
         nodes.append(os.spawnlp(os.P_NOWAIT, 'python', 'python', 'entangled/node.py', str(startPort)))

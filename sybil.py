@@ -39,14 +39,12 @@ class SybilNode(EntangledNode):
                      to the specified key
         @rtype: twisted.internet.defer.Deferred
         """
-        print 'Sybil Node'
         # Prepare a callback for this operation
         outerDf = defer.Deferred()
         def checkResult(result):
             
             # An arbitrary payload.
             value = 'payload'
-            print 'result: ', result
             if type(result) == dict:
                 result[key] = value
                 # We have found the value; now see who was the closest contact without it...
